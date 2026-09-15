@@ -1,1239 +1,994 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aurelia Grand — Luxury Stay, Simple Booking</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Amber Court — Boutique Heritage Hotel, Jaipur</title>
+<meta name="description" content="A 14-room heritage haveli in Jaipur. Courtyard suites, rooftop dining and direct booking on call or WhatsApp." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-/* =========================================================
-   AURELIA GRAND — HOTEL WEBSITE
-   All hotel details live in the CONFIG object at the top of
-   the <script> block near the bottom of this file. Edit that
-   object to change name, contact info, rooms, prices, images,
-   amenities, gallery, and location — everything else updates
-   automatically.
-   ========================================================= */
-
+/* ============================================================
+   1. DESIGN TOKENS  — change colours here to re-brand the site
+   ============================================================ */
 :root{
-  --cream:#FAF7F1;
-  --cream-soft:#F3EEE4;
-  --navy:#1B2338;
-  --navy-2:#141A2B;
-  --gold:#B98A52;
-  --gold-dark:#9C7140;
-  --gold-light:#E9D8BE;
-  --text-dark:#232735;
-  --text-muted:#6B7280;
-  --text-soft:#8B8F9B;
-  --border:#E7E1D4;
-  --white:#FFFFFF;
-  --radius-lg:18px;
-  --radius-md:12px;
-  --radius-sm:8px;
-  --shadow:0 12px 30px -14px rgba(27,35,56,.25);
-  --shadow-soft:0 6px 20px -10px rgba(27,35,56,.18);
+  --ink:#191430;          /* deep indigo, headers & footer     */
+  --ink-2:#241D45;        /* raised indigo                     */
+  --brass:#C09340;        /* primary accent                    */
+  --brass-lite:#E0C078;
+  --paper:#FBF9F7;        /* page background                   */
+  --mist:#EEEAF2;         /* alternating section background    */
+  --text:#2B2440;
+  --muted:#6D6683;
+  --line:#E2DDE9;
+  --white:#fff;
+  --wa:#25D366;
+
+  --font-display:'Marcellus', Georgia, serif;
+  --font-body:'Jost', system-ui, -apple-system, sans-serif;
+
+  --wrap:1180px;
+  --radius:4px;           /* deliberately tight, not bubbly    */
+  --shadow:0 18px 50px -28px rgba(25,20,48,.55);
+  --ease:cubic-bezier(.22,.61,.36,1);
 }
 
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+/* ============================================================
+   2. BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:78px}
 body{
-  font-family:'Poppins',sans-serif;
-  color:var(--text-dark);
-  background:var(--cream);
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  margin:0;background:var(--paper);color:var(--text);
+  font-family:var(--font-body);font-weight:300;font-size:17px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
-img{max-width:100%;display:block;}
-a{text-decoration:none;color:inherit;}
-button{font-family:inherit;cursor:pointer;border:none;background:none;}
-input,select,textarea{font-family:inherit;font-size:15px;}
-h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:600;color:var(--text-dark);}
-section{scroll-margin-top:84px;}
-.container{max-width:1200px;margin:0 auto;padding:0 32px;}
-.eyebrow{
-  display:inline-block;
-  font-size:13px;
-  letter-spacing:2.5px;
-  text-transform:uppercase;
-  color:var(--gold-dark);
-  font-weight:600;
-  margin-bottom:14px;
-}
-.section-head{text-align:center;max-width:640px;margin:0 auto 56px;}
-.section-head h2{font-size:40px;margin-bottom:14px;}
-.section-head p{color:var(--text-muted);font-size:16px;}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:400;line-height:1.15;letter-spacing:.01em;margin:0}
+h1{font-size:clamp(2.6rem,6.4vw,4.6rem)}
+h2{font-size:clamp(1.9rem,3.8vw,2.9rem)}
+h3{font-size:1.3rem}
+p{margin:0 0 1rem}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:2px}
+
+.wrap{width:min(100% - 2.6rem,var(--wrap));margin-inline:auto}
+section{padding:clamp(4rem,9vw,7rem) 0}
+.alt{background:var(--mist)}
+
+.heading{max-width:56ch;margin-bottom:2.8rem}
+.heading p{color:var(--muted);margin:.9rem 0 0;max-width:52ch}
+.rule{width:54px;height:2px;background:var(--brass);margin-bottom:1.1rem}
+
+/* ---- buttons ---- */
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:15px 30px;border-radius:999px;font-size:14.5px;font-weight:600;
-  letter-spacing:.3px;transition:all .25s ease;white-space:nowrap;
+  display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
+  padding:.85rem 1.6rem;border-radius:var(--radius);font-size:.95rem;font-weight:500;
+  letter-spacing:.02em;transition:transform .25s var(--ease),background .25s,color .25s,border-color .25s;
+  border:1px solid transparent;white-space:nowrap;
 }
-.btn-gold{background:var(--gold);color:#fff;box-shadow:0 10px 24px -10px rgba(185,138,82,.6);}
-.btn-gold:hover{background:var(--gold-dark);transform:translateY(-1px);}
-.btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.55);}
-.btn-outline:hover{background:rgba(255,255,255,.12);border-color:#fff;}
-.btn-outline-navy{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
-.btn-outline-navy:hover{border-color:var(--navy);}
-.btn-outline-gold{background:transparent;color:var(--gold-dark);border:1.5px solid var(--gold);}
-.btn-outline-gold:hover{background:rgba(185,138,82,.08);}
-.btn-block{width:100%;}
-.btn svg{width:17px;height:17px;flex-shrink:0;}
-.icon-circle{
-  width:56px;height:56px;border-radius:50%;
-  background:var(--gold-light);display:flex;align-items:center;justify-content:center;
-  color:var(--gold-dark);flex-shrink:0;
-}
-.icon-circle svg{width:24px;height:24px;}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{width:18px;height:18px;flex:none}
+.btn-brass{background:var(--brass);color:#1b1503}
+.btn-brass:hover{background:var(--brass-lite)}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ink:hover{background:var(--ink-2)}
+.btn-ghost{border-color:currentColor;color:var(--ink)}
+.btn-ghost:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn-ghost-light{border-color:rgba(255,255,255,.55);color:#fff}
+.btn-ghost-light:hover{background:#fff;color:var(--ink)}
+.btn-wa{background:var(--wa);color:#04361a}
+.btn-wa:hover{background:#3ae57c}
 
-/* ============ NAVBAR ============ */
-header{
-  position:sticky;top:0;left:0;right:0;z-index:500;
-  background:rgba(250,247,241,.92);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
+/* ============================================================
+   3. NAVBAR + MOBILE MENU
+   ============================================================ */
+.nav{
+  position:fixed;inset:0 0 auto;z-index:60;
+  transition:background .35s var(--ease),box-shadow .35s,padding .35s;
+  padding:1.15rem 0;
 }
-.navbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 32px;max-width:1200px;margin:0 auto;
+.nav.solid{background:rgba(25,20,48,.96);box-shadow:0 1px 0 rgba(255,255,255,.08);padding:.65rem 0}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{display:flex;flex-direction:column;line-height:1.05;color:#fff}
+.brand b{font-family:var(--font-display);font-weight:400;font-size:1.32rem;letter-spacing:.02em}
+.brand span{font-size:.62rem;letter-spacing:.34em;color:var(--brass-lite);text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{color:rgba(255,255,255,.85);font-size:.93rem;position:relative;padding:.25rem 0}
+.nav-links a::after{
+  content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--brass-lite);
+  transition:width .3s var(--ease);
 }
-.logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;letter-spacing:.5px;color:var(--navy);}
-.logo span{color:var(--gold-dark);font-family:'Poppins',sans-serif;font-size:11px;letter-spacing:3px;display:block;font-weight:600;margin-top:-2px;}
-.nav-links{display:flex;gap:34px;align-items:center;}
-.nav-links a{font-size:14.5px;font-weight:500;color:var(--text-dark);position:relative;padding:4px 0;}
-.nav-links a:hover{color:var(--gold-dark);}
-.nav-right{display:flex;align-items:center;gap:22px;}
-.nav-phone{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;color:var(--navy);}
-.nav-phone svg{width:17px;height:17px;color:var(--gold-dark);}
-.hamburger{display:none;width:26px;height:20px;position:relative;flex-direction:column;justify-content:space-between;}
-.hamburger span{display:block;height:2px;width:100%;background:var(--navy);border-radius:2px;transition:.3s;}
-.hamburger.open span:nth-child(1){transform:translateY(9px) rotate(45deg);}
-.hamburger.open span:nth-child(2){opacity:0;}
-.hamburger.open span:nth-child(3){transform:translateY(-9px) rotate(-45deg);}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-cta{display:flex;gap:.6rem;align-items:center}
+.nav-cta .btn{padding:.6rem 1.15rem;font-size:.86rem}
 
-.mobile-drawer{
-  position:fixed;top:0;right:-100%;width:78%;max-width:320px;height:100vh;
-  background:var(--cream);z-index:900;box-shadow:-10px 0 40px rgba(0,0,0,.2);
-  transition:right .35s ease;padding:100px 30px 30px;
-}
-.mobile-drawer.open{right:0;}
-.mobile-drawer a{display:block;font-size:17px;padding:14px 0;border-bottom:1px solid var(--border);font-weight:500;}
-.mobile-drawer .btn{margin-top:24px;}
-.drawer-overlay{
-  position:fixed;inset:0;background:rgba(20,26,43,.5);z-index:850;
-  opacity:0;visibility:hidden;transition:.3s;
-}
-.drawer-overlay.open{opacity:1;visibility:visible;}
-.drawer-close{position:absolute;top:28px;right:24px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;}
+.burger{display:none;width:44px;height:44px;border:1px solid rgba(255,255,255,.3);border-radius:var(--radius);
+  align-items:center;justify-content:center;flex-direction:column;gap:5px}
+.burger i{display:block;width:19px;height:1.5px;background:#fff;transition:transform .3s var(--ease),opacity .2s}
+.burger.open i:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.burger.open i:nth-child(2){opacity:0}
+.burger.open i:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 
-/* ============ HERO ============ */
-.hero{
-  position:relative;color:#fff;
-  min-height:640px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:100px 24px 130px;
-  background:linear-gradient(180deg,rgba(20,26,43,.55) 0%,rgba(20,26,43,.72) 100%),
-    url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat;
+.drawer{
+  position:fixed;z-index:59;inset:0 0 0 auto;width:min(86vw,340px);
+  background:var(--ink);padding:6.2rem 1.8rem 2rem;
+  transform:translateX(100%);transition:transform .38s var(--ease);
+  display:flex;flex-direction:column;gap:.2rem;overflow-y:auto;
 }
-.hero .eyebrow{color:var(--gold-light);}
-.hero h1{font-size:clamp(36px,5.5vw,64px);line-height:1.12;margin-bottom:20px;font-weight:600;}
-.hero p.sub{max-width:520px;color:rgba(255,255,255,.85);font-size:16.5px;margin-bottom:34px;}
-.hero-buttons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:0;}
+.drawer.open{transform:none}
+.drawer a.dlink{color:rgba(255,255,255,.88);padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:1.02rem}
+.drawer .btn{margin-top:.8rem;width:100%}
+.scrim{position:fixed;inset:0;background:rgba(15,11,30,.6);opacity:0;pointer-events:none;transition:opacity .35s;z-index:58}
+.scrim.on{opacity:1;pointer-events:auto}
 
-.search-bar{
-  margin-top:60px;background:#fff;border-radius:18px;box-shadow:var(--shadow);
-  display:flex;align-items:stretch;gap:0;padding:14px;max-width:900px;width:92%;
-  position:relative;color:var(--text-dark);flex-wrap:wrap;
+/* ============================================================
+   4. HERO
+   ============================================================ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;padding-bottom:clamp(3rem,7vw,5.5rem);color:#fff;overflow:hidden}
+.hero-bg{position:absolute;inset:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);animation:slowpan 18s var(--ease) forwards}
+@keyframes slowpan{to{transform:scale(1)}}
+.hero-bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(20,15,40,.72) 0%,rgba(20,15,40,.28) 38%,rgba(18,13,36,.88) 100%)}
+.hero-in{position:relative;z-index:2;max-width:760px}
+.hero .eyebrow{font-size:.72rem;letter-spacing:.32em;color:var(--brass-lite);margin-bottom:1.1rem;text-transform:uppercase}
+.hero h1{margin-bottom:1.1rem}
+.hero p.lede{color:rgba(255,255,255,.86);max-width:48ch;font-size:1.06rem}
+.hero-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.9rem}
+.hero-facts{
+  position:relative;z-index:2;margin-top:3.2rem;display:flex;flex-wrap:wrap;gap:2.4rem;
+  border-top:1px solid rgba(255,255,255,.22);padding-top:1.4rem;
 }
-.search-field{flex:1;min-width:150px;padding:8px 20px;border-right:1px solid var(--border);}
-.search-field:last-of-type{border-right:none;}
-.search-field label{display:flex;align-items:center;gap:6px;font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-soft);font-weight:600;margin-bottom:6px;}
-.search-field label svg{width:13px;height:13px;}
-.search-field input, .search-field select{border:none;outline:none;font-size:15px;width:100%;color:var(--text-dark);background:transparent;}
-.search-bar .btn{margin:6px;flex-shrink:0;}
+.hero-facts div{min-width:110px}
+.hero-facts b{display:block;font-family:var(--font-display);font-size:1.5rem;color:var(--brass-lite)}
+.hero-facts span{font-size:.82rem;color:rgba(255,255,255,.7)}
+.reveal-up{opacity:0;transform:translateY(22px);animation:rise .9s var(--ease) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
 
-/* ============ ROOMS ============ */
-.rooms-section{padding:100px 0 90px;background:var(--cream);}
-.room-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
-.room-card{
-  background:#fff;border-radius:var(--radius-lg);overflow:hidden;
-  box-shadow:var(--shadow-soft);border:1px solid var(--border);
-  display:flex;flex-direction:column;transition:transform .25s ease, box-shadow .25s ease;
+/* ============================================================
+   5. ABOUT
+   ============================================================ */
+.about-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+.about-art{position:relative}
+.about-art img{border-radius:var(--radius);box-shadow:var(--shadow);aspect-ratio:4/5;object-fit:cover;width:100%}
+.about-art .badge{
+  position:absolute;right:-18px;bottom:26px;background:var(--ink);color:#fff;
+  padding:1.1rem 1.4rem;border-radius:var(--radius);border-left:3px solid var(--brass);max-width:190px
 }
-.room-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);}
-.room-img{position:relative;height:210px;overflow:hidden;}
-.room-img img{width:100%;height:100%;object-fit:cover;}
-.room-price-badge{
-  position:absolute;top:14px;right:14px;background:rgba(255,255,255,.95);
-  padding:7px 14px;border-radius:999px;font-weight:700;font-size:14px;color:var(--navy);
-  box-shadow:0 4px 12px rgba(0,0,0,.15);
-}
-.room-price-badge small{font-weight:500;color:var(--text-muted);font-size:11px;}
-.room-body{padding:22px 24px 24px;display:flex;flex-direction:column;flex:1;}
-.room-body h3{font-size:21px;margin-bottom:8px;}
-.room-meta{display:flex;gap:16px;font-size:13px;color:var(--text-muted);margin-bottom:12px;}
-.room-meta span{display:flex;align-items:center;gap:5px;}
-.room-meta svg{width:15px;height:15px;color:var(--gold-dark);}
-.room-desc{font-size:14px;color:var(--text-muted);margin-bottom:16px;flex:1;}
-.room-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
-.room-tag{font-size:12px;color:var(--text-muted);background:var(--cream-soft);padding:5px 10px;border-radius:6px;display:flex;align-items:center;gap:5px;}
-.room-tag svg{width:12px;height:12px;color:var(--gold-dark);}
+.about-art .badge b{font-family:var(--font-display);font-size:1.6rem;color:var(--brass-lite);display:block}
+.about-art .badge span{font-size:.78rem;color:rgba(255,255,255,.75);line-height:1.4;display:block}
+.about-list{list-style:none;padding:0;margin:1.6rem 0 2rem;display:grid;gap:.7rem}
+.about-list li{display:flex;gap:.7rem;align-items:flex-start;font-size:.97rem}
+.about-list svg{width:17px;height:17px;color:var(--brass);flex:none;margin-top:5px}
 
-/* ============ AMENITIES ============ */
-.amenities-section{padding:90px 0;background:var(--cream-soft);}
-.amenities-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
-.amenity-card{
-  background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);
-  padding:32px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;
-  transition:transform .2s ease, box-shadow .2s ease;
-}
-.amenity-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-soft);}
-.amenity-card span{font-weight:600;font-size:15px;}
+/* ============================================================
+   6. ROOMS
+   ============================================================ */
+.rooms{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.6rem}
+.room{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  display:flex;flex-direction:column;transition:box-shadow .3s var(--ease),transform .3s var(--ease)}
+.room:hover{box-shadow:var(--shadow);transform:translateY(-4px)}
+.room-img{position:relative;aspect-ratio:3/2;overflow:hidden}
+.room-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}
+.room:hover .room-img img{transform:scale(1.06)}
+.room-tag{position:absolute;top:12px;left:12px;background:rgba(25,20,48,.9);color:var(--brass-lite);
+  font-size:.68rem;letter-spacing:.18em;padding:.35rem .7rem;border-radius:2px;text-transform:uppercase}
+.room-body{padding:1.4rem 1.4rem 1.5rem;display:flex;flex-direction:column;flex:1}
+.room-body h3{margin-bottom:.35rem}
+.room-body .meta{font-size:.84rem;color:var(--muted);margin-bottom:.7rem}
+.room-body p{font-size:.94rem;color:var(--muted)}
+.room-feat{list-style:none;padding:0;margin:0 0 1.2rem;display:flex;flex-wrap:wrap;gap:.4rem}
+.room-feat li{font-size:.76rem;border:1px solid var(--line);padding:.25rem .6rem;border-radius:99px;color:var(--muted)}
+.room-price{display:flex;align-items:baseline;gap:.4rem;margin-top:auto;padding-top:1rem;border-top:1px solid var(--line)}
+.room-price b{font-family:var(--font-display);font-size:1.75rem;color:var(--ink)}
+.room-price span{font-size:.82rem;color:var(--muted)}
+.room-actions{display:flex;gap:.55rem;margin-top:1rem}
+.room-actions .btn{flex:1;padding:.72rem .6rem;font-size:.86rem}
 
-/* ============ ABOUT ============ */
-.about-section{padding:100px 0;background:var(--cream);}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
-.about-img-wrap{position:relative;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);}
-.about-img-wrap img{width:100%;height:460px;object-fit:cover;}
-.about-badge{
-  position:absolute;bottom:24px;left:24px;background:#fff;border-radius:var(--radius-md);
-  padding:16px 22px;box-shadow:0 10px 24px rgba(0,0,0,.15);
-}
-.about-badge .num{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--gold-dark);line-height:1;}
-.about-badge .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-top:4px;}
-.about-text h2{font-size:36px;margin-bottom:18px;}
-.about-text p{color:var(--text-muted);margin-bottom:22px;font-size:15.5px;}
-.about-list{list-style:none;margin-bottom:28px;}
-.about-list li{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;font-size:15px;color:var(--text-dark);}
-.about-list svg{width:20px;height:20px;color:var(--gold-dark);flex-shrink:0;margin-top:1px;}
+/* ============================================================
+   7. AMENITIES
+   ============================================================ */
+.amen{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.amen div{background:var(--paper);padding:1.7rem 1.4rem;transition:background .3s}
+.amen div:hover{background:var(--white)}
+.amen svg{width:26px;height:26px;color:var(--brass);margin-bottom:.8rem}
+.amen h4{font-size:1.02rem;margin-bottom:.25rem}
+.amen p{font-size:.87rem;color:var(--muted);margin:0}
+.alt .amen div{background:var(--mist)}
+.alt .amen div:hover{background:var(--white)}
 
-/* ============ GALLERY ============ */
-.gallery-section{padding:100px 0;background:var(--cream);}
-.gallery-grid{
-  display:grid;grid-template-columns:1.3fr 1fr 1fr;grid-auto-rows:150px;gap:16px;
-}
-.gallery-grid .g1{grid-row:span 2;}
-.gallery-grid .g5{grid-column:2/4;}
-.gallery-grid .g6{grid-row:span 2;}
-.gallery-item{border-radius:var(--radius-md);overflow:hidden;cursor:pointer;position:relative;}
-.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
-.gallery-item:hover img{transform:scale(1.06);}
-.gallery-item::after{
-  content:'';position:absolute;inset:0;background:rgba(20,26,43,0);transition:.25s;
-}
-.gallery-item:hover::after{background:rgba(20,26,43,.15);}
+/* ============================================================
+   8. GALLERY + LIGHTBOX
+   ============================================================ */
+.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+.gal button{padding:0;overflow:hidden;border-radius:var(--radius);position:relative;aspect-ratio:1;background:var(--mist)}
+.gal button:nth-child(1),.gal button:nth-child(6){grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+.gal img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease),filter .4s}
+.gal button:hover img{transform:scale(1.07);filter:brightness(.82)}
 
-/* ============ LOCATION ============ */
-.location-section{padding:100px 0;background:var(--cream-soft);}
-.location-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:stretch;}
-.map-wrap{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-soft);min-height:420px;border:1px solid var(--border);}
-.map-wrap iframe{width:100%;height:100%;min-height:420px;border:0;}
-.location-info{background:#fff;border-radius:var(--radius-lg);padding:34px;box-shadow:var(--shadow-soft);border:1px solid var(--border);display:flex;flex-direction:column;}
-.location-addr{display:flex;gap:12px;margin-bottom:26px;font-size:15px;}
-.location-addr svg{width:20px;height:20px;color:var(--gold-dark);flex-shrink:0;margin-top:2px;}
-.nearby-title{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-soft);font-weight:600;margin-bottom:14px;}
-.nearby-list{list-style:none;margin-bottom:28px;flex:1;}
-.nearby-list li{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:14.5px;}
-.nearby-list li:last-child{border-bottom:none;}
-.nearby-list .time{color:var(--gold-dark);font-weight:600;font-size:13px;}
+.lb{position:fixed;inset:0;z-index:90;background:rgba(14,10,28,.94);display:none;
+  align-items:center;justify-content:center;padding:1.2rem}
+.lb.on{display:flex}
+.lb img{max-width:92vw;max-height:80vh;border-radius:var(--radius);object-fit:contain}
+.lb-cap{position:absolute;bottom:1.6rem;left:0;right:0;text-align:center;color:rgba(255,255,255,.75);font-size:.88rem}
+.lb-btn{position:absolute;background:rgba(255,255,255,.12);color:#fff;width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:background .25s}
+.lb-btn:hover{background:rgba(255,255,255,.28)}
+.lb-prev{left:1.2rem}.lb-next{right:1.2rem}.lb-close{top:1.2rem;right:1.2rem}
 
-/* ============ CONTACT ============ */
-.contact-section{padding:100px 0 110px;background:var(--cream);}
-.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
-.contact-card{
-  background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);
-  padding:34px 28px;text-align:center;box-shadow:var(--shadow-soft);
-  display:flex;flex-direction:column;align-items:center;gap:14px;
-}
-.contact-card .icon-circle{margin-bottom:4px;}
-.contact-card .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-soft);font-weight:600;}
-.contact-card .val{font-size:17px;font-weight:600;color:var(--navy);word-break:break-word;}
-.contact-card.whatsapp-card{background:var(--navy);color:#fff;}
-.contact-card.whatsapp-card .lbl{color:rgba(255,255,255,.6);}
-.contact-card.whatsapp-card .val{color:#fff;}
-.contact-card.whatsapp-card .icon-circle{background:rgba(255,255,255,.12);color:#fff;}
-.contact-extra{margin-top:44px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px 32px;box-shadow:var(--shadow-soft);}
-.contact-extra-addr{display:flex;align-items:center;gap:12px;font-size:14.5px;color:var(--text-muted);}
-.contact-extra-addr svg{width:19px;height:19px;color:var(--gold-dark);flex-shrink:0;}
-.contact-extra-btns{display:flex;gap:12px;flex-wrap:wrap;}
+/* ============================================================
+   9. REVIEWS
+   ============================================================ */
+.rev-window{overflow:hidden}
+.rev-track{display:flex;transition:transform .55s var(--ease)}
+.rev-slide{min-width:100%;padding:0 .4rem}
+.rev-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+  padding:clamp(1.8rem,4vw,2.8rem);max-width:780px}
+.stars{color:var(--brass);letter-spacing:.22em;font-size:.95rem;margin-bottom:1rem}
+.rev-card blockquote{margin:0 0 1.5rem;font-family:var(--font-display);font-size:clamp(1.15rem,2.3vw,1.5rem);line-height:1.55}
+.rev-who{display:flex;align-items:center;gap:.85rem}
+.rev-who img{width:46px;height:46px;border-radius:50%;object-fit:cover}
+.rev-who b{display:block;font-weight:500;font-size:.96rem}
+.rev-who span{font-size:.82rem;color:var(--muted)}
+.rev-nav{display:flex;align-items:center;gap:.7rem;margin-top:1.8rem}
+.rev-nav button.arrow{width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--white);
+  display:flex;align-items:center;justify-content:center;transition:background .25s,color .25s,border-color .25s}
+.rev-nav button.arrow:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.dots{display:flex;gap:.4rem;margin-left:.6rem}
+.dots button{width:9px;height:9px;border-radius:50%;background:var(--line);transition:background .3s,width .3s}
+.dots button.on{background:var(--brass);width:26px;border-radius:99px}
 
-/* ============ FOOTER ============ */
-footer{background:var(--navy-2);color:rgba(255,255,255,.72);padding:70px 0 26px;}
-.footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:50px;margin-bottom:50px;}
-.footer-logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:14px;}
-.footer-logo span{color:var(--gold);}
-footer p{font-size:14px;line-height:1.7;color:rgba(255,255,255,.55);max-width:320px;margin-bottom:22px;}
-.footer-social{display:flex;gap:12px;}
-.footer-social a{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;transition:.2s;}
-.footer-social a:hover{background:var(--gold);}
-.footer-social svg{width:16px;height:16px;color:#fff;}
-.footer-col h4{color:#fff;font-family:'Poppins',sans-serif;font-size:14.5px;font-weight:600;letter-spacing:.5px;margin-bottom:20px;}
-.footer-col a{display:block;font-size:14px;color:rgba(255,255,255,.6);margin-bottom:13px;transition:.2s;}
-.footer-col a:hover{color:var(--gold);}
-.footer-col .contact-line{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:rgba(255,255,255,.6);margin-bottom:14px;}
-.footer-col .contact-line svg{width:16px;height:16px;flex-shrink:0;margin-top:2px;color:var(--gold);}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:24px;text-align:center;font-size:13px;color:rgba(255,255,255,.4);}
+/* ============================================================
+   10. CONTACT + MAP
+   ============================================================ */
+.contact-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(2rem,4vw,3.4rem)}
+.info-row{display:flex;gap:1rem;padding:1.15rem 0;border-bottom:1px solid var(--line)}
+.info-row:first-of-type{border-top:1px solid var(--line)}
+.info-row svg{width:20px;height:20px;color:var(--brass);flex:none;margin-top:4px}
+.info-row b{display:block;font-weight:500;font-size:.95rem}
+.info-row span,.info-row a{color:var(--muted);font-size:.93rem}
+.info-row a:hover{color:var(--brass)}
+.contact-cta{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.6rem}
 
-/* ============ STICKY MOBILE BAR ============ */
-.mobile-actionbar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:600;background:#fff;box-shadow:0 -6px 24px rgba(0,0,0,.12);padding:10px 14px;gap:10px;border-top:1px solid var(--border);}
-.mobile-actionbar a, .mobile-actionbar button{flex:1;}
+form{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(1.4rem,3vw,2rem)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+label{display:block;font-size:.8rem;color:var(--muted);margin:0 0 .35rem}
+input,textarea,select{
+  width:100%;padding:.75rem .85rem;border:1px solid var(--line);border-radius:var(--radius);
+  font:inherit;font-size:.94rem;background:var(--paper);color:var(--text);margin-bottom:.9rem;transition:border-color .25s
+}
+input:focus,textarea:focus,select:focus{border-color:var(--brass);outline:none}
+textarea{resize:vertical;min-height:96px}
+form .btn{width:100%}
+.form-note{font-size:.8rem;color:var(--muted);margin:.8rem 0 0;text-align:center}
+.form-msg{font-size:.88rem;margin:.9rem 0 0;padding:.7rem .9rem;border-radius:var(--radius);display:none}
+.form-msg.show{display:block}
+.form-msg.err{background:#fdeeee;color:#9b2c2c;border:1px solid #f3cfcf}
+.form-msg.ok{background:#eef8f1;color:#1f6b3d;border:1px solid #cbe8d6}
 
-/* ============ MODAL ============ */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(15,19,32,.6);z-index:1000;
-  display:flex;align-items:center;justify-content:center;padding:20px;
-  opacity:0;visibility:hidden;transition:opacity .25s ease;backdrop-filter:blur(3px);
-}
-.modal-overlay.open{opacity:1;visibility:visible;}
-.modal{
-  background:#fff;border-radius:20px;max-width:920px;width:100%;max-height:88vh;overflow-y:auto;
-  display:grid;grid-template-columns:0.85fr 1.15fr;box-shadow:0 30px 80px -20px rgba(0,0,0,.4);
-  transform:translateY(16px);transition:transform .25s ease;position:relative;
-}
-.modal-overlay.open .modal{transform:translateY(0);}
-.modal-close{position:absolute;top:22px;right:22px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--cream-soft);z-index:5;transition:.2s;}
-.modal-close:hover{background:var(--border);}
-.modal-close svg{width:17px;height:17px;}
-.modal-left{background:var(--cream-soft);padding:44px 34px;border-radius:20px 0 0 20px;display:flex;flex-direction:column;}
-.modal-left h2{font-size:25px;margin-bottom:8px;}
-.modal-left .modal-sub{font-size:13.5px;color:var(--text-muted);margin-bottom:30px;}
-.selection-label{font-size:11.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-soft);font-weight:600;margin-bottom:12px;}
-.selection-box{background:#fff;border:1px dashed var(--border);border-radius:var(--radius-md);padding:20px;font-size:14px;color:var(--text-muted);min-height:110px;margin-bottom:26px;}
-.selection-box.filled{border-style:solid;border-color:var(--gold);color:var(--text-dark);}
-.selection-box .sel-name{font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--navy);margin-bottom:6px;}
-.selection-box .sel-price{color:var(--gold-dark);font-weight:700;margin-bottom:8px;}
-.selection-box .sel-meta{display:flex;gap:14px;font-size:12.5px;color:var(--text-muted);}
-.modal-phone{display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:600;color:var(--navy);margin-top:auto;}
-.modal-phone svg{width:17px;height:17px;color:var(--gold-dark);}
-.modal-right{padding:44px 34px;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
-.form-group label{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:1px;font-weight:600;color:var(--text-soft);margin-bottom:8px;}
-.form-group label .req{color:var(--gold-dark);}
-.form-group input, .form-group select, .form-group textarea{
-  width:100%;border:1.4px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14.5px;
-  outline:none;transition:border-color .2s;background:#fff;color:var(--text-dark);
-}
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus{border-color:var(--gold);}
-.form-group textarea{resize:vertical;min-height:80px;}
-.form-error{color:#C0392B;font-size:12px;margin-top:5px;display:none;}
-.form-group.error input, .form-group.error select, .form-group.error textarea{border-color:#C0392B;}
-.form-group.error .form-error{display:block;}
-.modal-actions{margin-top:6px;display:flex;flex-direction:column;gap:12px;}
+.map{margin-top:clamp(3rem,6vw,4.5rem);border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+  box-shadow:var(--shadow);line-height:0}
+.map iframe{width:100%;height:420px;border:0;filter:grayscale(.28) contrast(1.02)}
 
-.success-panel{display:none;flex-direction:column;align-items:center;text-align:center;padding:30px 10px;}
-.success-panel.show{display:flex;}
-.success-icon{width:70px;height:70px;border-radius:50%;background:#E8F5E9;display:flex;align-items:center;justify-content:center;margin-bottom:22px;}
-.success-icon svg{width:34px;height:34px;color:#2E7D32;}
-.success-panel h3{font-size:22px;margin-bottom:10px;}
-.success-panel p{color:var(--text-muted);font-size:14.5px;margin-bottom:26px;max-width:360px;}
-.success-actions{display:flex;gap:12px;width:100%;flex-wrap:wrap;justify-content:center;}
-.success-actions .btn{flex:1;min-width:160px;}
-.booking-form{display:none;}
-.booking-form.show{display:block;}
+/* ============================================================
+   11. FOOTER + FLOATING BUTTONS
+   ============================================================ */
+footer{background:var(--ink);color:rgba(255,255,255,.72);padding:clamp(3.2rem,6vw,4.6rem) 0 0}
+.f-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:2.2rem}
+footer h4{color:#fff;font-size:1rem;margin-bottom:1rem;letter-spacing:.04em}
+footer p{font-size:.92rem}
+footer ul{list-style:none;padding:0;margin:0;display:grid;gap:.6rem;font-size:.92rem}
+footer ul a:hover{color:var(--brass-lite)}
+.f-brand b{font-family:var(--font-display);font-size:1.5rem;color:#fff;display:block}
+.f-brand span{font-size:.62rem;letter-spacing:.34em;color:var(--brass-lite);text-transform:uppercase}
+.f-social{display:flex;gap:.6rem;margin-top:1.2rem}
+.f-social a{width:38px;height:38px;border:1px solid rgba(255,255,255,.22);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;transition:background .25s,border-color .25s}
+.f-social a:hover{background:var(--brass);border-color:var(--brass);color:#1b1503}
+.f-social svg{width:17px;height:17px}
+.f-bar{margin-top:3rem;border-top:1px solid rgba(255,255,255,.12);padding:1.3rem 0;
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.84rem}
 
-/* ============ LIGHTBOX ============ */
-.lightbox{position:fixed;inset:0;background:rgba(10,13,22,.94);z-index:1100;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:.25s;}
-.lightbox.open{opacity:1;visibility:visible;}
-.lightbox img{max-width:88vw;max-height:82vh;object-fit:contain;border-radius:8px;}
-.lightbox-close, .lightbox-prev, .lightbox-next{
-  position:absolute;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.1);
-  display:flex;align-items:center;justify-content:center;color:#fff;transition:.2s;
+.fab{position:fixed;right:18px;bottom:18px;z-index:70;display:flex;flex-direction:column;gap:.6rem;align-items:flex-end}
+.fab-wa{
+  display:flex;align-items:center;gap:.6rem;background:var(--wa);color:#04361a;
+  padding:.8rem 1.15rem;border-radius:99px;font-size:.92rem;font-weight:500;
+  box-shadow:0 12px 30px -10px rgba(37,211,102,.7);transition:transform .25s var(--ease)
 }
-.lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover{background:rgba(255,255,255,.22);}
-.lightbox-close{top:26px;right:26px;}
-.lightbox-prev{left:26px;top:50%;transform:translateY(-50%);}
-.lightbox-next{right:26px;top:50%;transform:translateY(-50%);}
-.lightbox-close svg, .lightbox-prev svg, .lightbox-next svg{width:22px;height:22px;}
-.lightbox-counter{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:13px;letter-spacing:1px;}
+.fab-wa:hover{transform:translateY(-3px)}
+.fab-wa svg{width:22px;height:22px}
+.fab-wa .lbl{display:inline}
+.fab-top{width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:none;
+  align-items:center;justify-content:center;box-shadow:var(--shadow);transition:transform .25s}
+.fab-top.on{display:flex}
+.fab-top:hover{transform:translateY(-3px)}
 
-.toast{
-  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--navy);color:#fff;padding:14px 26px;border-radius:999px;font-size:14px;font-weight:500;
-  box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:1300;opacity:0;visibility:hidden;transition:.3s;display:flex;align-items:center;gap:10px;
-}
-.toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
-.toast svg{width:17px;height:17px;color:#7EE0A0;flex-shrink:0;}
+/* ============================================================
+   12. SCROLL REVEAL + RESPONSIVE
+   ============================================================ */
+.r{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.r.in{opacity:1;transform:none}
 
-/* ============ RESPONSIVE ============ */
-@media(max-width:1024px){
-  .room-grid{grid-template-columns:repeat(2,1fr);}
-  .amenities-grid{grid-template-columns:repeat(2,1fr);}
-  .about-grid{grid-template-columns:1fr;gap:40px;}
-  .location-grid{grid-template-columns:1fr;}
-  .contact-grid{grid-template-columns:1fr;}
-  .footer-grid{grid-template-columns:1fr 1fr;}
-  .modal{grid-template-columns:1fr;}
-  .modal-left{border-radius:20px 20px 0 0;}
+@media (max-width:980px){
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .about-art .badge{right:14px}
+  .f-grid{grid-template-columns:1fr 1fr}
+  .gal{grid-template-columns:repeat(3,1fr)}
 }
-@media(max-width:768px){
-  .nav-links, .nav-phone-desktop{display:none;}
-  .hamburger{display:flex;}
-  .container{padding:0 20px;}
-  .hero{padding:80px 16px 150px;min-height:auto;}
-  .room-grid{grid-template-columns:1fr;}
-  .amenities-grid{grid-template-columns:repeat(2,1fr);}
-  .gallery-grid{grid-template-columns:1fr 1fr;grid-auto-rows:130px;}
-  .gallery-grid .g1{grid-column:1/3;grid-row:span 2;}
-  .gallery-grid .g5{grid-column:1/3;grid-row:span 1;}
-  .gallery-grid .g6{grid-row:span 1;}
-  .footer-grid{grid-template-columns:1fr;gap:34px;}
-  .section-head h2{font-size:30px;}
-  .about-text h2{font-size:28px;}
-  .mobile-actionbar{display:flex;}
-  body{padding-bottom:70px;}
-  .form-row{grid-template-columns:1fr;}
-  .contact-extra{flex-direction:column;align-items:flex-start;}
-  .nav-right .btn-gold-desktop{display:none;}
+@media (max-width:860px){
+  .nav-links,.nav-cta{display:none}
+  .burger{display:flex}
 }
-@media(max-width:480px){
-  .search-bar{flex-direction:column;padding:16px;}
-  .search-field{border-right:none;border-bottom:1px solid var(--border);padding:12px 6px;}
-  .search-bar .btn{margin:10px 0 0;}
+@media (max-width:640px){
+  body{font-size:16px}
+  .gal{grid-template-columns:repeat(2,1fr);gap:.5rem}
+  .gal button:nth-child(6){grid-column:span 1;grid-row:span 1;aspect-ratio:1}
+  .f2{grid-template-columns:1fr}
+  .f-grid{grid-template-columns:1fr}
+  .hero-facts{gap:1.5rem 2rem}
+  .hero-cta .btn{flex:1 1 100%}
+  .fab-wa .lbl{display:none}
+  .fab-wa{padding:.9rem;border-radius:50%}
+  .map iframe{height:320px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  html{scroll-behavior:auto}
+  .r{opacity:1;transform:none}
 }
 </style>
 </head>
 <body>
 
-<!-- ============ HEADER / NAV ============ -->
-<header>
-  <div class="navbar">
-    <a href="#home" class="logo">Aurelia <span>GRAND</span></a>
-    <nav class="nav-links">
-      <a href="#home">Home</a>
+<!-- ================= NAVBAR ================= -->
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="brand">
+      <b data-hotel-name>The Amber Court</b>
+      <span>Jaipur</span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#about">About</a>
       <a href="#rooms">Rooms</a>
       <a href="#amenities">Amenities</a>
-      <a href="#about">About</a>
       <a href="#gallery">Gallery</a>
-      <a href="#location">Location</a>
+      <a href="#reviews">Reviews</a>
       <a href="#contact">Contact</a>
     </nav>
-    <div class="nav-right">
-      <a class="nav-phone nav-phone-desktop" id="navPhoneLink" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span id="navPhoneText"></span>
-      </a>
-      <button class="btn btn-gold btn-gold-desktop" onclick="openBookingModal()">Book Now</button>
-      <div class="hamburger" id="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></div>
+
+    <div class="nav-cta">
+      <a class="btn btn-ghost-light" data-call href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>Call now</a>
+      <a class="btn btn-brass" data-wa="I'd like to check room availability." href="#">Book on WhatsApp</a>
     </div>
+
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <i></i><i></i><i></i>
+    </button>
   </div>
 </header>
 
-<div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
-<div class="mobile-drawer" id="mobileDrawer">
-  <div class="drawer-close" onclick="toggleDrawer()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+<!-- mobile drawer -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Mobile menu">
+  <a class="dlink" href="#about">About</a>
+  <a class="dlink" href="#rooms">Rooms &amp; rates</a>
+  <a class="dlink" href="#amenities">Amenities</a>
+  <a class="dlink" href="#gallery">Gallery</a>
+  <a class="dlink" href="#reviews">Reviews</a>
+  <a class="dlink" href="#contact">Contact</a>
+  <a class="btn btn-brass" data-wa="I'd like to check room availability." href="#">Book on WhatsApp</a>
+  <a class="btn btn-ghost-light" data-call href="#">Call the front desk</a>
+</aside>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="hero-bg">
+    <img data-img="hero" alt="Courtyard of the hotel at dusk" fetchpriority="high" />
   </div>
-  <a href="#home" onclick="toggleDrawer()">Home</a>
-  <a href="#rooms" onclick="toggleDrawer()">Rooms</a>
-  <a href="#amenities" onclick="toggleDrawer()">Amenities</a>
-  <a href="#about" onclick="toggleDrawer()">About</a>
-  <a href="#gallery" onclick="toggleDrawer()">Gallery</a>
-  <a href="#location" onclick="toggleDrawer()">Location</a>
-  <a href="#contact" onclick="toggleDrawer()">Contact</a>
-  <button class="btn btn-gold btn-block" onclick="toggleDrawer();openBookingModal();">Book Now</button>
+  <div class="wrap hero-in">
+    <p class="eyebrow reveal-up" style="animation-delay:.1s">Heritage haveli · Est. 1934</p>
+    <h1 class="reveal-up" style="animation-delay:.22s">Quiet courtyards,<br>five minutes from the old city.</h1>
+    <p class="lede reveal-up" style="animation-delay:.36s">
+      Fourteen rooms around a sandstone courtyard, a rooftop kitchen that runs till midnight,
+      and a doorman who remembers how you take your chai.
+    </p>
+    <div class="hero-cta reveal-up" style="animation-delay:.5s">
+      <a class="btn btn-brass" data-wa="Hello! I'd like to book a room.">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.2 1.3-2 1.4-.5.1-1.2.1-3.8-.9-2.7-1.1-4.4-3.8-4.5-4-.1-.2-1-1.4-1-2.7s.6-1.9.9-2.1c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.2.1.4.1.6-.1l.8-1c.2-.2.3-.2.5-.1l2 .9c.2.1.4.2.4.3.1.2.1.8-.1 1.5z"/></svg>
+        Book on WhatsApp
+      </a>
+      <a class="btn btn-ghost-light" data-call>Call <span data-phone>+91 98290 00000</span></a>
+    </div>
+    <div class="hero-facts reveal-up" style="animation-delay:.64s">
+      <div><b>14</b><span>Rooms &amp; suites</span></div>
+      <div><b>4.9</b><span>Guest rating</span></div>
+      <div><b>1.2 km</b><span>To Hawa Mahal</span></div>
+      <div><b>24/7</b><span>Front desk</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="r">
+      <div class="rule"></div>
+      <h2>A family house that started taking guests in 1961.</h2>
+      <p style="color:var(--muted);margin-top:1rem">
+        The Amber Court was built as a merchant's residence and still works like a home:
+        jali screens instead of air-conditioning noise, breakfast served where you like it,
+        and staff who have been here longer than most hotels have existed.
+      </p>
+      <ul class="about-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Airport pickup arranged the night before, no surcharge</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Rooftop restaurant with a working tandoor, open to 11:30 pm</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Walking distance to Hawa Mahal, Johari Bazaar and City Palace</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Book direct and skip the 18% booking-site markup</li>
+      </ul>
+      <div class="contact-cta" style="margin-top:0">
+        <a class="btn btn-ink" href="#rooms">See rooms &amp; rates</a>
+        <a class="btn btn-ghost" data-call>Call the front desk</a>
+      </div>
+    </div>
+
+    <div class="about-art r">
+      <img data-img="about" alt="Interior courtyard with arched windows" loading="lazy" />
+      <div class="badge">
+        <b>62 yrs</b>
+        <span>of the same family at the front desk</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ROOMS ================= -->
+<section class="alt" id="rooms">
+  <div class="wrap">
+    <div class="heading r">
+      <div class="rule"></div>
+      <h2>Rooms &amp; rates</h2>
+      <p>Rates are per night for two guests and include breakfast and taxes. Book on WhatsApp for direct-booking rates.</p>
+    </div>
+    <div class="rooms" id="roomGrid"><!-- filled by script --></div>
+  </div>
+</section>
+
+<!-- ================= AMENITIES ================= -->
+<section id="amenities">
+  <div class="wrap">
+    <div class="heading r">
+      <div class="rule"></div>
+      <h2>What's included</h2>
+      <p>Everything below comes with the room. Nothing is billed at checkout as a surprise.</p>
+    </div>
+    <div class="amen r" id="amenGrid"><!-- filled by script --></div>
+  </div>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section class="alt" id="gallery">
+  <div class="wrap">
+    <div class="heading r">
+      <div class="rule"></div>
+      <h2>The property</h2>
+      <p>Tap any photo to open it full size.</p>
+    </div>
+    <div class="gal r" id="galGrid"><!-- filled by script --></div>
+  </div>
+</section>
+
+<!-- lightbox -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous photo">&#8249;</button>
+  <img id="lbImg" alt="" />
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next photo">&#8250;</button>
+  <p class="lb-cap" id="lbCap"></p>
 </div>
 
-<!-- ============ HERO ============ -->
-<section class="hero" id="home">
-  <span class="eyebrow">A Five-Star Sanctuary</span>
-  <h1>Luxury Stay,<br>Simple Booking</h1>
-  <p class="sub">Wake to soft golden light, serene interiors and effortless service. Reserve your stay in seconds — no account, no friction.</p>
-  <div class="hero-buttons">
-    <button class="btn btn-gold" onclick="openBookingModal()">Book Your Stay</button>
-    <a class="btn btn-outline" href="#" id="callToBookLink">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      Call to Book
-    </a>
-  </div>
-
-  <div class="search-bar">
-    <div class="search-field">
-      <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Check-in</label>
-      <input type="date" id="heroCheckin">
+<!-- ================= REVIEWS ================= -->
+<section id="reviews">
+  <div class="wrap">
+    <div class="heading r">
+      <div class="rule"></div>
+      <h2>What guests say</h2>
+      <p>Collected from guests who booked with us directly over the last year.</p>
     </div>
-    <div class="search-field">
-      <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Check-out</label>
-      <input type="date" id="heroCheckout">
+    <div class="rev-window r">
+      <div class="rev-track" id="revTrack"><!-- filled by script --></div>
     </div>
-    <div class="search-field">
-      <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Guests</label>
-      <select id="heroGuests">
-        <option value="1">1 Guest</option>
-        <option value="2" selected>2 Guests</option>
-        <option value="3">3 Guests</option>
-        <option value="4">4 Guests</option>
-        <option value="5+">5+ Guests</option>
-      </select>
-    </div>
-    <button class="btn btn-gold" onclick="submitHeroSearch()">Book Now</button>
-  </div>
-</section>
-
-<!-- ============ ROOMS ============ -->
-<section class="rooms-section" id="rooms">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Accommodations</span>
-      <h2>Rooms &amp; Suites</h2>
-      <p>Thoughtfully designed spaces where comfort meets calm. Every room includes premium linens, natural light and our signature service.</p>
-    </div>
-    <div class="room-grid" id="roomGrid"></div>
-  </div>
-</section>
-
-<!-- ============ AMENITIES ============ -->
-<section class="amenities-section" id="amenities">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Hotel Facilities</span>
-      <h2>Thoughtful Amenities</h2>
-      <p>Everything you need for a relaxed, well-cared-for stay.</p>
-    </div>
-    <div class="amenities-grid" id="amenitiesGrid"></div>
-  </div>
-</section>
-
-<!-- ============ ABOUT ============ -->
-<section class="about-section" id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div class="about-img-wrap">
-        <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=1000&q=80" alt="Aurelia Grand lobby" onerror="this.onerror=null;this.src='https://picsum.photos/seed/aurelia-lobby/900/700'">
-        <div class="about-badge">
-          <div class="num" id="aboutYears">15+</div>
-          <div class="lbl">Years of Hospitality</div>
-        </div>
-      </div>
-      <div class="about-text">
-        <span class="eyebrow">About Aurelia Grand</span>
-        <h2>A sanctuary by the sea</h2>
-        <p id="aboutParagraph">Aurelia Grand is a calm, contemporary retreat on Kochi's Marine Drive — where golden-hour light, warm wood tones and crisp white linens set the tone for an unhurried stay. We believe luxury should feel effortless, and so should booking it.</p>
-        <ul class="about-list" id="aboutList">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg> Effortless direct booking — no account, no friction</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg> Prime seafront location near Kochi's top attractions</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg> Serene, design-led interiors with premium linens</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg> Warm, attentive service available 24/7</li>
-        </ul>
-        <button class="btn btn-gold" onclick="openBookingModal()">Book Your Stay
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-      </div>
+    <div class="rev-nav">
+      <button class="arrow" id="revPrev" aria-label="Previous review">&#8249;</button>
+      <button class="arrow" id="revNext" aria-label="Next review">&#8250;</button>
+      <div class="dots" id="revDots"></div>
     </div>
   </div>
 </section>
 
-<!-- ============ GALLERY ============ -->
-<section class="gallery-section" id="gallery">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Gallery</span>
-      <h2>A glimpse of your stay</h2>
-      <p>A closer look at our spaces, from sunrise pool views to quiet, sunlit rooms.</p>
-    </div>
-    <div class="gallery-grid" id="galleryGrid"></div>
-  </div>
-</section>
-
-<!-- ============ LOCATION ============ -->
-<section class="location-section" id="location">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Location</span>
-      <h2>Find us by the sea</h2>
-      <p>Right on Marine Drive, minutes from Kochi's best-loved landmarks.</p>
-    </div>
-    <div class="location-grid">
-      <div class="map-wrap">
-        <iframe id="mapFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-      </div>
-      <div class="location-info">
-        <div class="location-addr">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span id="locationAddrText"></span>
-        </div>
-        <div class="nearby-title">Nearby Attractions</div>
-        <ul class="nearby-list" id="nearbyList"></ul>
-        <a class="btn btn-gold btn-block" id="directionsBtn" href="#" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-          Get Directions
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CONTACT ============ -->
-<section class="contact-section" id="contact">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Contact</span>
-      <h2>We're here to help</h2>
-      <p>Reach out any time — our team responds quickly, day or night.</p>
-    </div>
+<!-- ================= CONTACT + MAP ================= -->
+<section class="alt" id="contact">
+  <div class="wrap">
     <div class="contact-grid">
-      <div class="contact-card">
-        <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-        <span class="lbl">Call Us</span>
-        <a class="val" id="contactPhoneLink" href="#"></a>
+      <div class="r">
+        <div class="rule"></div>
+        <h2>Book or ask us anything</h2>
+        <p style="color:var(--muted);margin-top:.8rem">
+          The front desk answers day and night. WhatsApp is usually fastest.
+        </p>
+
+        <div class="info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div><b>Address</b><span data-address>Ghat Gate Road, Near Hawa Mahal, Jaipur, Rajasthan 302002</span></div>
+        </div>
+        <div class="info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+          <div><b>Phone</b><a data-call href="#"><span data-phone>+91 98290 00000</span></a></div>
+        </div>
+        <div class="info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+          <div><b>Email</b><a data-email-link href="#"><span data-email>stay@ambercourt.example</span></a></div>
+        </div>
+        <div class="info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div><b>Check-in / check-out</b><span>2:00 pm / 11:00 am — early arrival on request</span></div>
+        </div>
+
+        <div class="contact-cta">
+          <a class="btn btn-wa" data-wa="Hello! I have a question about my stay.">Chat on WhatsApp</a>
+          <a class="btn btn-ghost" data-call>Call now</a>
+          <a class="btn btn-ghost" data-directions target="_blank" rel="noopener">Get directions</a>
+        </div>
       </div>
-      <div class="contact-card">
-        <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-        <span class="lbl">Email Us</span>
-        <a class="val" id="contactEmailLink" href="#" style="font-size:15px;"></a>
-      </div>
-      <div class="contact-card whatsapp-card">
-        <div class="icon-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
-        <span class="lbl">WhatsApp</span>
-        <span class="val">Chat with us</span>
-        <button class="btn btn-gold" style="margin-top:6px;" onclick="openWhatsApp()">Message Now</button>
+
+      <div class="r">
+        <form id="bookForm" novalidate>
+          <h3 style="margin-bottom:1.2rem">Request a booking</h3>
+          <div class="f2">
+            <div><label for="fName">Your name</label><input id="fName" type="text" placeholder="Anita Sharma" autocomplete="name" /></div>
+            <div><label for="fPhone">Phone</label><input id="fPhone" type="tel" placeholder="+91 98290 00000" autocomplete="tel" /></div>
+          </div>
+          <div class="f2">
+            <div><label for="fIn">Check-in</label><input id="fIn" type="date" /></div>
+            <div><label for="fOut">Check-out</label><input id="fOut" type="date" /></div>
+          </div>
+          <div class="f2">
+            <div><label for="fRoom">Room</label><select id="fRoom"></select></div>
+            <div><label for="fGuests">Guests</label>
+              <select id="fGuests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5+</option></select>
+            </div>
+          </div>
+          <label for="fMsg">Anything we should know?</label>
+          <textarea id="fMsg" placeholder="Arriving late, need an airport pickup, quiet room…"></textarea>
+          <button type="submit" class="btn btn-brass">Send request on WhatsApp</button>
+          <p class="form-msg" id="formMsg" role="status"></p>
+          <p class="form-note">This opens WhatsApp with your details filled in. Nothing is sent until you press send.</p>
+        </form>
       </div>
     </div>
 
-    <div class="contact-extra">
-      <div class="contact-extra-addr">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span id="contactAddrText"></span>
-      </div>
-      <div class="contact-extra-btns">
-        <a class="btn btn-outline-navy" id="contactCallBtn" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          Call Now
-        </a>
-        <button class="btn btn-gold" onclick="openBookingModal()">Book Your Stay</button>
-      </div>
+    <div class="map r">
+      <iframe id="mapFrame" title="Hotel location on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
     </div>
   </div>
 </section>
 
-<!-- ============ FOOTER ============ -->
+<!-- ================= FOOTER ================= -->
 <footer>
-  <div class="container">
-    <div class="footer-grid">
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-brand">
+        <b data-hotel-name>The Amber Court</b>
+        <span>Jaipur</span>
+        <p style="margin-top:1rem;max-width:34ch">
+          A fourteen-room heritage haveli a short walk from the old city walls.
+        </p>
+        <div class="f-social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z"/></svg></a>
+          <a data-wa="Hi! I found you on your website." aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.2 1.3-2 1.4-.5.1-1.2.1-3.8-.9-2.7-1.1-4.4-3.8-4.5-4-.1-.2-1-1.4-1-2.7s.6-1.9.9-2.1c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.2.1.4.1.6-.1l.8-1c.2-.2.3-.2.5-.1l2 .9c.2.1.4.2.4.3.1.2.1.8-.1 1.5z"/></svg></a>
+        </div>
+      </div>
+
       <div>
-        <div class="footer-logo">Aurelia <span>GRAND</span></div>
-        <p>A calm, contemporary retreat by the sea — where luxury feels effortless.</p>
-        <div class="footer-social">
-          <a href="#" onclick="return false;" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.87v-6.98H7.9V12h2.5V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.98A10 10 0 0 0 22 12z"/></svg></a>
-          <a href="#" onclick="return false;" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg></a>
-          <a href="#" onclick="return false;" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
-        </div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#about">About the house</a></li>
+          <li><a href="#rooms">Rooms &amp; rates</a></li>
+          <li><a href="#amenities">Amenities</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+        </ul>
       </div>
-      <div class="footer-col">
-        <h4>Quick Links</h4>
-        <a href="#home">Home</a>
-        <a href="#rooms">Rooms</a>
-        <a href="#amenities">Amenities</a>
-        <a href="#about">About</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#location">Location</a>
-        <a href="#contact">Contact</a>
+
+      <div>
+        <h4>Stay</h4>
+        <ul>
+          <li><a href="#reviews">Guest reviews</a></li>
+          <li><a href="#contact">Book a room</a></li>
+          <li><a data-directions target="_blank" rel="noopener">Directions</a></li>
+          <li><a data-call>Call the desk</a></li>
+        </ul>
       </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <div class="contact-line">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span id="footerPhoneText"></span>
-        </div>
-        <div class="contact-line">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          <span id="footerEmailText"></span>
-        </div>
-        <div class="contact-line">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span id="footerAddrText"></span>
-        </div>
+
+      <div>
+        <h4>Front desk</h4>
+        <ul>
+          <li><a data-call><span data-phone>+91 98290 00000</span></a></li>
+          <li><a data-email-link><span data-email>stay@ambercourt.example</span></a></li>
+          <li data-address>Ghat Gate Road, Near Hawa Mahal, Jaipur, Rajasthan 302002</li>
+          <li>Open 24 hours, every day</li>
+        </ul>
       </div>
     </div>
-    <div class="footer-bottom" id="footerBottom"></div>
+
+    <div class="wrap f-bar" style="width:100%">
+      <span>© <span id="year"></span> <span data-hotel-name>The Amber Court</span>. All rights reserved.</span>
+      <span>Direct bookings only — no commission, no middlemen.</span>
+    </div>
   </div>
 </footer>
 
-<!-- ============ MOBILE ACTION BAR ============ -->
-<div class="mobile-actionbar">
-  <a class="btn btn-outline-navy" id="mobileCallBtn" href="#">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-    Call
+<!-- ================= FLOATING BUTTONS ================= -->
+<div class="fab">
+  <button class="fab-top" id="toTop" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+  </button>
+  <a class="fab-wa" data-wa="Hi! I'd like to know about room availability." aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.2 1.3-2 1.4-.5.1-1.2.1-3.8-.9-2.7-1.1-4.4-3.8-4.5-4-.1-.2-1-1.4-1-2.7s.6-1.9.9-2.1c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.2.1.4.1.6-.1l.8-1c.2-.2.3-.2.5-.1l2 .9c.2.1.4.2.4.3.1.2.1.8-.1 1.5z"/></svg>
+    <span class="lbl">WhatsApp</span>
   </a>
-  <button class="btn btn-gold" onclick="openBookingModal()">Book Now</button>
-</div>
-
-<!-- ============ BOOKING MODAL ============ -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <button class="modal-close" onclick="closeBookingModal()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <div class="modal-left">
-      <h2>Book Your Stay</h2>
-      <p class="modal-sub">No account needed — takes under a minute</p>
-      <div class="selection-label">Your Selection</div>
-      <div class="selection-box" id="selectionBox">Select a room type to see details here, or simply fill the form and our team will help you choose.</div>
-      <a class="modal-phone" id="modalPhoneLink" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span id="modalPhoneText"></span>
-      </a>
-    </div>
-    <div class="modal-right">
-      <form class="booking-form show" id="bookingForm" novalidate>
-        <div class="form-row">
-          <div class="form-group" id="grp-name">
-            <label>Full Name <span class="req">*</span></label>
-            <input type="text" id="bkName" placeholder="Your name" autocomplete="name">
-            <div class="form-error">Please enter your full name.</div>
-          </div>
-          <div class="form-group" id="grp-phone">
-            <label>Phone Number <span class="req">*</span></label>
-            <input type="tel" id="bkPhone" placeholder="+91 ..." autocomplete="tel">
-            <div class="form-error">Please enter a valid phone number.</div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group" id="grp-checkin">
-            <label>Check-in <span class="req">*</span></label>
-            <input type="date" id="bkCheckin">
-            <div class="form-error">Please choose a check-in date.</div>
-          </div>
-          <div class="form-group" id="grp-checkout">
-            <label>Check-out <span class="req">*</span></label>
-            <input type="date" id="bkCheckout">
-            <div class="form-error">Check-out must be after check-in.</div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Number of Guests</label>
-            <select id="bkGuests">
-              <option value="1">1 Guest</option>
-              <option value="2" selected>2 Guests</option>
-              <option value="3">3 Guests</option>
-              <option value="4">4 Guests</option>
-              <option value="5+">5+ Guests</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Room Type</label>
-            <select id="bkRoomType"></select>
-          </div>
-        </div>
-        <div class="form-row" style="grid-template-columns:1fr;">
-          <div class="form-group">
-            <label>Number of Rooms</label>
-            <select id="bkRoomCount">
-              <option value="1" selected>1 Room</option>
-              <option value="2">2 Rooms</option>
-              <option value="3">3 Rooms</option>
-              <option value="4+">4+ Rooms</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group" style="margin-bottom:24px;">
-          <div class="form-group">
-  <label for="bkPaymentMethod">Payment Method</label>
-  <select id="bkPaymentMethod" name="paymentMethod">
-    <option value="cash">Cash at Hotel</option>
-    <option value="online">Online Payment</option>
-  </select>
-</div>
-          <label>Special Request (optional)</label>
-          <textarea id="bkRequest" placeholder="Early check-in, dietary needs, anniversary surprise..."></textarea>
-        </div>
-        <div class="modal-actions">
-          <button type="submit" class="btn btn-gold btn-block">Submit Booking Request</button>
-          <button type="button" class="btn btn-outline-gold btn-block" onclick="sendWhatsAppFromForm()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            Send via WhatsApp Instead
-          </button>
-        </div>
-      </form>
-
-      <div class="success-panel" id="successPanel">
-        <div class="success-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
-        </div>
-        <h3>Booking request received</h3>
-        <p>Thank you! Our reservations team will contact you shortly to confirm your stay. For a faster response, you can also reach us directly below.</p>
-        <div class="success-actions">
-          <button class="btn btn-gold" onclick="sendWhatsAppSummary()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            WhatsApp Us
-          </button>
-          <a class="btn btn-outline-navy" id="successCallBtn" href="#">Call Now</a>
-        </div>
-        <button class="btn" style="margin-top:20px;color:var(--text-muted);font-size:13px;text-decoration:underline;" onclick="resetBookingForm()">Make another booking</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ============ LIGHTBOX ============ -->
-<div class="lightbox" id="lightbox">
-  <div class="lightbox-close" onclick="closeLightbox()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </div>
-  <div class="lightbox-prev" onclick="navLightbox(-1)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-  </div>
-  <img id="lightboxImg" src="" alt="">
-  <div class="lightbox-next" onclick="navLightbox(1)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-  </div>
-  <div class="lightbox-counter" id="lightboxCounter"></div>
-</div>
-
-<div class="toast" id="toast">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
-  <span id="toastText"></span>
 </div>
 
 <script>
-/* =========================================================
-   CONFIG — edit everything here to rebrand this site for a
-   different property. Nothing below this object needs to
-   change for a normal content update.
-   ========================================================= */
+/* ==================================================================
+   ★★★  EDIT EVERYTHING HERE  ★★★
+   Hotel name, phone, address, map, rooms, prices, photos, reviews.
+   Nothing below this block needs to change.
+   ================================================================== */
 const CONFIG = {
-  hotelName: "Aurelia Grand",
-  hotelNameShort: "Aurelia",
-  hotelNameSuffix: "GRAND",
-  tagline: "A calm, contemporary retreat by the sea — where luxury feels effortless.",
-  phoneDisplay: "+91 98765 43210",
-  phoneDial: "+919876543210",
-  whatsappNumber: "919876543210", // country code + number, no + or spaces
-  email: "reservations@aureliagrand.com",
-  address: "12 Marine Drive, Coastal Avenue, Kochi, Kerala 682001, India",
-  yearsOfHospitality: 15,
-  mapQuery: "12 Marine Drive, Coastal Avenue, Kochi, Kerala 682001, India",
+  hotelName : "The Amber Court",
+  phone     : "+91 98290 00000",        // shown on the page
+  phoneDial : "+919829000000",          // used by the Call button (no spaces)
+  whatsapp  : "919829000000",           // country code + number, no + or spaces
+  email     : "stay@ambercourt.example",
+  address   : "Ghat Gate Road, Near Hawa Mahal, Jaipur, Rajasthan 302002",
+
+  // Paste your own Google Maps embed URL here (Maps → Share → Embed a map)
+  mapEmbed  : "https://www.google.com/maps?q=Hawa+Mahal,+Jaipur,+Rajasthan&output=embed",
+
+  // Photos — swap these URLs for your own
+  images: {
+    hero : "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1900&q=80",
+    about: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=80"
+  },
 
   rooms: [
     {
-      id: "deluxe",
-      name: "Deluxe Room",
-      price: 4500,
-      guests: 2,
-      bed: "King Bed",
-      desc: "A serene retreat with crisp white linens, warm wood floors and soft natural light framing the city beyond.",
-      amenities: ["Wi-Fi", "AC", "TV", "Breakfast"],
-      image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80",
-      fallback: "https://picsum.photos/seed/aurelia-deluxe/900/700"
+      name : "Courtyard Room",
+      tag  : "Most booked",
+      meta : "24 m² · Queen bed · Courtyard view",
+      desc : "A quiet ground-floor room opening onto the sandstone courtyard, with a carved jharokha window seat.",
+      feat : ["Free Wi-Fi", "Breakfast", "AC", "Ensuite bath"],
+      price: "₹3,200",
+      img  : "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=900&q=80"
     },
     {
-      id: "executive",
-      name: "Executive Suite",
-      price: 7200,
-      guests: 3,
-      bed: "King Bed",
-      desc: "An expansive suite with a private lounge, floor-to-ceiling windows and a calm garden-facing view.",
-      amenities: ["Wi-Fi", "AC", "TV", "Breakfast", "Mini Bar"],
-      image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80",
-      fallback: "https://picsum.photos/seed/aurelia-executive/900/700"
+      name : "Jharokha Suite",
+      tag  : "Best view",
+      meta : "38 m² · King bed · Balcony",
+      desc : "First-floor suite with a private balcony over the lane, a sitting area and a deep soaking tub.",
+      feat : ["Balcony", "Breakfast", "Bathtub", "Work desk"],
+      price: "₹5,400",
+      img  : "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80"
     },
     {
-      id: "garden",
-      name: "Garden Premium Room",
-      price: 5800,
-      guests: 2,
-      bed: "Queen Bed",
-      desc: "A bright room opening onto a private balcony surrounded by greenery — perfect for slow mornings.",
-      amenities: ["Wi-Fi", "AC", "TV", "Breakfast", "Balcony"],
-      image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=900&q=80",
-      fallback: "https://picsum.photos/seed/aurelia-garden/900/700"
+      name : "Rooftop Family Room",
+      tag  : "Sleeps 4",
+      meta : "46 m² · King + twin · Terrace access",
+      desc : "Top-floor room next to the terrace restaurant, with two bathrooms and a fort view at sunset.",
+      feat : ["Sleeps 4", "2 bathrooms", "Terrace", "Fort view"],
+      price: "₹6,900",
+      img  : "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=900&q=80"
+    },
+    {
+      name : "Garden Twin",
+      tag  : "For friends",
+      meta : "26 m² · Two single beds · Garden view",
+      desc : "Two proper single beds, a shared writing table and a door straight out to the neem tree garden.",
+      feat : ["Twin beds", "Garden door", "AC", "Free Wi-Fi"],
+      price: "₹3,600",
+      img  : "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=900&q=80"
+    },
+    {
+      name : "Heritage Deluxe",
+      tag  : "Original wing",
+      meta : "32 m² · King bed · Frescoed ceiling",
+      desc : "The oldest room in the house, with its 1934 fresco ceiling restored and a marble bathroom.",
+      feat : ["Fresco ceiling", "Breakfast", "Minibar", "Bathtub"],
+      price: "₹4,800",
+      img  : "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=900&q=80"
+    },
+    {
+      name : "Terrace Studio",
+      tag  : "Long stays",
+      meta : "40 m² · King bed · Kitchenette",
+      desc : "A self-contained studio with a kitchenette and laundry service, priced lower past seven nights.",
+      feat : ["Kitchenette", "Laundry", "Workspace", "Terrace"],
+      price: "₹5,900",
+      img  : "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80"
     }
   ],
 
   amenities: [
-    { icon: "wifi", label: "Free Wi-Fi" },
-    { icon: "pool", label: "Swimming Pool" },
-    { icon: "restaurant", label: "Restaurant" },
-    { icon: "parking", label: "Parking" },
-    { icon: "ac", label: "Air Conditioning" },
-    { icon: "service", label: "Room Service" },
-    { icon: "reception", label: "24/7 Reception" },
-    { icon: "breakfast", label: "Breakfast" }
+    { t:"Rooftop restaurant", d:"Rajasthani thali and wood-fired breads until 11:30 pm.", i:"utensils" },
+    { t:"Fast Wi-Fi everywhere", d:"Fibre line, strong enough for video calls from the terrace.", i:"wifi" },
+    { t:"Airport transfer", d:"Sedan pickup from JAI, arranged the night before.", i:"car" },
+    { t:"Plunge pool", d:"Small shaded pool in the rear garden, open 7 am to 8 pm.", i:"pool" },
+    { t:"Laundry, same day", d:"Given before 10 am, back in your room by evening.", i:"shirt" },
+    { t:"Front desk, 24 hours", d:"Someone is always at the desk, whatever time you land.", i:"bell" },
+    { t:"Guided old-city walks", d:"Two-hour morning walk with our own guide, on request.", i:"walk" },
+    { t:"Secure parking", d:"Gated courtyard parking for four cars, free for guests.", i:"key" }
   ],
-
-  aboutImage: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=1000&q=80",
 
   gallery: [
-    { src: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1000&q=80", alt: "Hotel exterior with palms", fallback: "https://picsum.photos/seed/aurelia-g1/1000/1000" },
-    { src: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=700&q=80", alt: "Lobby chandelier", fallback: "https://picsum.photos/seed/aurelia-g2/700/500" },
-    { src: "https://images.unsplash.com/photo-1590073844006-33379778ae09?auto=format&fit=crop&w=700&q=80", alt: "Bedroom with window light", fallback: "https://picsum.photos/seed/aurelia-g3/700/500" },
-    { src: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1000&q=80", alt: "Restaurant dining area", fallback: "https://picsum.photos/seed/aurelia-g4/1000/500" },
-    { src: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=700&q=80", alt: "Infinity pool at sunset", fallback: "https://picsum.photos/seed/aurelia-g5/700/500" },
-    { src: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=700&q=80", alt: "Room interior detail", fallback: "https://picsum.photos/seed/aurelia-g6/700/500" },
-    { src: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=700&q=80", alt: "Room key on marble table", fallback: "https://picsum.photos/seed/aurelia-g7/700/500" }
+    { src:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80", cap:"The inner courtyard" },
+    { src:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80",  cap:"Marble bathroom, Heritage Deluxe" },
+    { src:"https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80",  cap:"Rooftop at dusk" },
+    { src:"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=800&q=80",  cap:"Lobby and reception" },
+    { src:"https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=800&q=80",  cap:"Breakfast on the terrace" },
+    { src:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1200&q=80",   cap:"Garden and plunge pool" },
+    { src:"https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=800&q=80",  cap:"The dining room" },
+    { src:"https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=800&q=80",  cap:"Jharokha Suite balcony" }
   ],
 
-  nearby: [
-    { name: "Marine Drive Promenade", time: "2 min walk" },
-    { name: "Fort Kochi Heritage Area", time: "15 min drive" },
-    { name: "Cochin International Airport", time: "40 min drive" },
-    { name: "Lulu Mall & Shopping District", time: "10 min drive" }
+  reviews: [
+    { text:"We arrived at 2 am off a delayed flight and there was hot food waiting. That set the tone for the whole week.",
+      name:"Priya Menon", meta:"Bengaluru · stayed 6 nights", stars:5,
+      pic:"https://i.pravatar.cc/120?img=47" },
+    { text:"The courtyard room is genuinely quiet, which I did not expect this close to the bazaar. Slept better than at home.",
+      name:"Daniel Foster", meta:"London · stayed 3 nights", stars:5,
+      pic:"https://i.pravatar.cc/120?img=12" },
+    { text:"Booked over WhatsApp in about four messages, no deposit, no forms. The rate was lower than every booking site.",
+      name:"Ritika Agarwal", meta:"Delhi · stayed 2 nights", stars:5,
+      pic:"https://i.pravatar.cc/120?img=32" },
+    { text:"Ask for the rooftop family room. The kids had the terrace to themselves and we had the fort view with dinner.",
+      name:"Marco Bianchi", meta:"Milan · stayed 5 nights", stars:4,
+      pic:"https://i.pravatar.cc/120?img=68" }
   ]
 };
+/* ==================  END OF EDITABLE SECTION  ================== */
 
-/* =========================================================
-   ICONS
-   ========================================================= */
-const ICONS = {
-  wifi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>',
-  pool: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20"/><path d="M2 17c1.5 1 3 1 4.5 0s3-1 4.5 0 3 1 4.5 0 3-1 4.5 0"/><path d="M6 12V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v6"/></svg>',
-  restaurant: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h1a2 2 0 0 0 2-2V2"/><path d="M6 11v11"/><path d="M18 2c-2 0-3 2-3 5v3c0 1 1 1 2 1h2v9"/></svg>',
-  parking: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg>',
-  ac: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5l-5-3-5 3"/><path d="M17 19l-5 3-5-3"/><path d="M4.5 8.5l15 7"/><path d="M4.5 15.5l15-7"/></svg>',
-  service: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
-  reception: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-  breakfast: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
-  guests: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-  bed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8V6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2"/></svg>',
-  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>'
-};
 
-/* =========================================================
-   RENDER: ROOMS
-   ========================================================= */
-const roomGrid = document.getElementById('roomGrid');
-CONFIG.rooms.forEach(room => {
-  const card = document.createElement('div');
-  card.className = 'room-card';
+/* ------------------ helpers ------------------ */
+const $  = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+const waURL = (msg) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+const FALLBACK = (seed, w, h) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
+
+function safeImg(img, seed, w, h){
+  img.addEventListener('error', () => { img.src = FALLBACK(seed, w, h); }, { once:true });
+}
+
+/* ------------------ fill hotel details ------------------ */
+$$('[data-hotel-name]').forEach(el => el.textContent = CONFIG.hotelName);
+$$('[data-phone]').forEach(el => el.textContent = CONFIG.phone);
+$$('[data-address]').forEach(el => el.textContent = CONFIG.address);
+$$('[data-email]').forEach(el => el.textContent = CONFIG.email);
+$$('[data-call]').forEach(el => el.href = 'tel:' + CONFIG.phoneDial);
+$$('[data-email-link]').forEach(el => el.href = 'mailto:' + CONFIG.email);
+$$('[data-directions]').forEach(el =>
+  el.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(CONFIG.address));
+$$('[data-wa]').forEach(el => el.href = waURL(el.dataset.wa));
+$('#mapFrame').src = CONFIG.mapEmbed;
+$('#year').textContent = new Date().getFullYear();
+document.title = CONFIG.hotelName + ' — Boutique Hotel';
+
+const heroImg = $('[data-img="hero"]');
+heroImg.src = CONFIG.images.hero; safeImg(heroImg, 'hero', 1900, 1100);
+const aboutImg = $('[data-img="about"]');
+aboutImg.src = CONFIG.images.about; safeImg(aboutImg, 'about', 800, 1000);
+
+/* ------------------ rooms ------------------ */
+const roomGrid = $('#roomGrid');
+CONFIG.rooms.forEach((r, i) => {
+  const card = document.createElement('article');
+  card.className = 'room r';
   card.innerHTML = `
     <div class="room-img">
-      <img src="${room.image}" alt="${room.name}" onerror="this.onerror=null;this.src='${room.fallback}'">
-      <div class="room-price-badge">₹${room.price.toLocaleString('en-IN')} <small>/night</small></div>
+      <img alt="${r.name}" loading="lazy" />
+      ${r.tag ? `<span class="room-tag">${r.tag}</span>` : ''}
     </div>
     <div class="room-body">
-      <h3>${room.name}</h3>
-      <div class="room-meta">
-        <span>${ICONS.guests} ${room.guests} Guests</span>
-        <span>${ICONS.bed} ${room.bed}</span>
+      <h3>${r.name}</h3>
+      <p class="meta">${r.meta}</p>
+      <p>${r.desc}</p>
+      <ul class="room-feat">${r.feat.map(f => `<li>${f}</li>`).join('')}</ul>
+      <div class="room-price"><b>${r.price}</b><span>/ night, incl. breakfast</span></div>
+      <div class="room-actions">
+        <a class="btn btn-brass" target="_blank" rel="noopener"
+           href="${waURL(`Hello ${CONFIG.hotelName}! I'd like to book the ${r.name} (${r.price} per night). Please share availability.`)}">Book on WhatsApp</a>
+        <a class="btn btn-ghost" href="tel:${CONFIG.phoneDial}">Call</a>
       </div>
-      <p class="room-desc">${room.desc}</p>
-      <div class="room-tags">
-        ${room.amenities.map(a => `<span class="room-tag">${ICONS.check}${a}</span>`).join('')}
-      </div>
-      <button class="btn btn-gold btn-block" data-room="${room.id}">Book Now
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
     </div>`;
-  card.querySelector('button[data-room]').addEventListener('click', () => openBookingModal(room.id));
+  const im = card.querySelector('img');
+  im.src = r.img; safeImg(im, 'room' + i, 900, 600);
   roomGrid.appendChild(card);
 });
 
-/* =========================================================
-   RENDER: AMENITIES
-   ========================================================= */
-const amenitiesGrid = document.getElementById('amenitiesGrid');
-CONFIG.amenities.forEach(a => {
-  const el = document.createElement('div');
-  el.className = 'amenity-card';
-  el.innerHTML = `<div class="icon-circle">${ICONS[a.icon] || ''}</div><span>${a.label}</span>`;
-  amenitiesGrid.appendChild(el);
-});
+/* ------------------ amenities ------------------ */
+const ICONS = {
+  utensils:'<path d="M4 3v7a3 3 0 0 0 3 3v8M7 3v7M17 3c-1.7 1.5-2 4-2 6s.5 2.5 2 2.5V21"/>',
+  wifi:'<path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5.5 5.5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor"/>',
+  car:'<path d="M5 17h14M6 17V9l2-4h8l2 4v8"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/>',
+  pool:'<path d="M2 16c2 0 2 1.5 4 1.5S8 16 10 16s2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5M2 20c2 0 2 1.5 4 1.5S8 20 10 20s2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5M7 14V5a2 2 0 0 1 4 0v9M13 14V5a2 2 0 0 1 4 0v9"/>',
+  shirt:'<path d="M15 3 12 6 9 3 4 5.5 6 10l2-1v12h8V9l2 1 2-4.5z"/>',
+  bell:'<path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 3h16zM10 22h4"/>',
+  walk:'<circle cx="13" cy="4" r="2"/><path d="M9 21l2-6-2-3 1-5 4 3 3 1M11 15l-1 6"/>',
+  key:'<circle cx="8" cy="15" r="4"/><path d="M11 12 20 3l2 2-2 2 2 2-3 3-2-2-2 2"/>'
+};
+$('#amenGrid').innerHTML = CONFIG.amenities.map(a => `
+  <div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICONS[a.i] || ICONS.bell}</svg>
+    <h4>${a.t}</h4><p>${a.d}</p>
+  </div>`).join('');
 
-/* =========================================================
-   RENDER: ABOUT
-   ========================================================= */
-document.getElementById('aboutYears').textContent = CONFIG.yearsOfHospitality + '+';
-
-/* =========================================================
-   RENDER: GALLERY (+ lightbox)
-   ========================================================= */
-const galleryGrid = document.getElementById('galleryGrid');
-let lightboxIndex = 0;
+/* ------------------ gallery + lightbox ------------------ */
+const galGrid = $('#galGrid');
 CONFIG.gallery.forEach((g, i) => {
-  const el = document.createElement('div');
-  el.className = 'gallery-item g' + (i + 1);
-  el.innerHTML = `<img src="${g.src}" alt="${g.alt}" onerror="this.onerror=null;this.src='${g.fallback}'">`;
-  el.addEventListener('click', () => openLightbox(i));
-  galleryGrid.appendChild(el);
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.setAttribute('aria-label', 'Open photo: ' + g.cap);
+  b.innerHTML = `<img alt="${g.cap}" loading="lazy" />`;
+  const im = b.querySelector('img');
+  im.src = g.src; safeImg(im, 'gal' + i, 900, 900);
+  b.addEventListener('click', () => openLB(i));
+  galGrid.appendChild(b);
 });
 
-function openLightbox(i){
-  lightboxIndex = i;
-  updateLightbox();
-  document.getElementById('lightbox').classList.add('open');
+const lb = $('#lb'), lbImg = $('#lbImg'), lbCap = $('#lbCap');
+let lbIndex = 0;
+function openLB(i){
+  lbIndex = i;
+  lbImg.src = CONFIG.gallery[i].src;
+  lbImg.alt = CONFIG.gallery[i].cap;
+  lbCap.textContent = `${CONFIG.gallery[i].cap} — ${i + 1} of ${CONFIG.gallery.length}`;
+  lb.classList.add('on');
   document.body.style.overflow = 'hidden';
+  $('#lbClose').focus();
 }
-function closeLightbox(){
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function navLightbox(dir){
-  lightboxIndex = (lightboxIndex + dir + CONFIG.gallery.length) % CONFIG.gallery.length;
-  updateLightbox();
-}
-function updateLightbox(){
-  const g = CONFIG.gallery[lightboxIndex];
-  const img = document.getElementById('lightboxImg');
-  img.src = g.src;
-  img.alt = g.alt;
-  img.onerror = function(){ this.onerror = null; this.src = g.fallback; };
-  document.getElementById('lightboxCounter').textContent = (lightboxIndex + 1) + ' / ' + CONFIG.gallery.length;
-}
-document.getElementById('lightbox').addEventListener('click', (e) => {
-  if (e.target.id === 'lightbox') closeLightbox();
-});
-document.addEventListener('keydown', (e) => {
-  if (!document.getElementById('lightbox').classList.contains('open')) return;
-  if (e.key === 'Escape') closeLightbox();
-  if (e.key === 'ArrowLeft') navLightbox(-1);
-  if (e.key === 'ArrowRight') navLightbox(1);
+function closeLB(){ lb.classList.remove('on'); document.body.style.overflow = ''; }
+function stepLB(d){ openLB((lbIndex + d + CONFIG.gallery.length) % CONFIG.gallery.length); }
+$('#lbClose').addEventListener('click', closeLB);
+$('#lbPrev').addEventListener('click', () => stepLB(-1));
+$('#lbNext').addEventListener('click', () => stepLB(1));
+lb.addEventListener('click', e => { if (e.target === lb) closeLB(); });
+document.addEventListener('keydown', e => {
+  if (!lb.classList.contains('on')) return;
+  if (e.key === 'Escape') closeLB();
+  if (e.key === 'ArrowLeft') stepLB(-1);
+  if (e.key === 'ArrowRight') stepLB(1);
 });
 
-/* =========================================================
-   RENDER: LOCATION
-   ========================================================= */
-document.getElementById('mapFrame').src = 'https://www.google.com/maps?q=' + encodeURIComponent(CONFIG.mapQuery) + '&output=embed';
-document.getElementById('locationAddrText').textContent = CONFIG.address;
-document.getElementById('contactAddrText').textContent = CONFIG.address;
-document.getElementById('directionsBtn').href = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(CONFIG.mapQuery);
+/* ------------------ reviews slider ------------------ */
+const track = $('#revTrack'), dots = $('#revDots');
+CONFIG.reviews.forEach((rv, i) => {
+  const s = document.createElement('div');
+  s.className = 'rev-slide';
+  s.innerHTML = `
+    <div class="rev-card">
+      <div class="stars" aria-label="${rv.stars} out of 5">${'★'.repeat(rv.stars)}${'☆'.repeat(5 - rv.stars)}</div>
+      <blockquote>“${rv.text}”</blockquote>
+      <div class="rev-who">
+        <img alt="${rv.name}" loading="lazy" />
+        <div><b>${rv.name}</b><span>${rv.meta}</span></div>
+      </div>
+    </div>`;
+  const im = s.querySelector('img');
+  im.src = rv.pic; safeImg(im, 'face' + i, 120, 120);
+  track.appendChild(s);
 
-const nearbyList = document.getElementById('nearbyList');
-CONFIG.nearby.forEach(n => {
-  const li = document.createElement('li');
-  li.innerHTML = `<span>${n.name}</span><span class="time">${n.time}</span>`;
-  nearbyList.appendChild(li);
+  const d = document.createElement('button');
+  d.type = 'button';
+  d.setAttribute('aria-label', 'Go to review ' + (i + 1));
+  d.addEventListener('click', () => goTo(i));
+  dots.appendChild(d);
 });
 
-/* =========================================================
-   RENDER: CONTACT / HEADER / FOOTER TEXT
-   ========================================================= */
-document.getElementById('navPhoneText').textContent = CONFIG.phoneDisplay;
-document.getElementById('modalPhoneText').textContent = CONFIG.phoneDisplay;
-document.getElementById('footerPhoneText').textContent = CONFIG.phoneDisplay;
-document.getElementById('footerEmailText').textContent = CONFIG.email;
-document.getElementById('footerAddrText').textContent = CONFIG.address;
-document.getElementById('footerBottom').textContent = `© ${new Date().getFullYear()} ${CONFIG.hotelName}. All rights reserved. · Luxury Stay, Simple Booking.`;
-
-const telHref = 'tel:' + CONFIG.phoneDial.replace(/\s+/g, '');
-['navPhoneLink','callToBookLink','modalPhoneLink','contactPhoneLink','contactCallBtn','mobileCallBtn','successCallBtn'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.href = telHref;
-});
-document.getElementById('contactPhoneLink').textContent = CONFIG.phoneDisplay;
-document.getElementById('contactEmailLink').textContent = CONFIG.email;
-document.getElementById('contactEmailLink').href = 'mailto:' + CONFIG.email;
-
-/* =========================================================
-   MOBILE DRAWER
-   ========================================================= */
-function toggleDrawer(){
-  document.getElementById('hamburger').classList.toggle('open');
-  document.getElementById('mobileDrawer').classList.toggle('open');
-  document.getElementById('drawerOverlay').classList.toggle('open');
-  document.body.style.overflow = document.getElementById('mobileDrawer').classList.contains('open') ? 'hidden' : '';
+let revI = 0;
+function goTo(i){
+  revI = (i + CONFIG.reviews.length) % CONFIG.reviews.length;
+  track.style.transform = `translateX(-${revI * 100}%)`;
+  $$('button', dots).forEach((d, k) => d.classList.toggle('on', k === revI));
 }
+$('#revPrev').addEventListener('click', () => { goTo(revI - 1); rest(); });
+$('#revNext').addEventListener('click', () => { goTo(revI + 1); rest(); });
+goTo(0);
 
-/* =========================================================
-   BOOKING MODAL
-   ========================================================= */
-let selectedRoomId = null;
+let timer = null;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function play(){ if (!reduced) timer = setInterval(() => goTo(revI + 1), 7000); }
+function rest(){ clearInterval(timer); play(); }
+$('#reviews').addEventListener('mouseenter', () => clearInterval(timer));
+$('#reviews').addEventListener('mouseleave', play);
+play();
 
-function populateRoomTypeDropdown(){
-  const sel = document.getElementById('bkRoomType');
-  sel.innerHTML = '<option value="">Any room</option>' + CONFIG.rooms.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+/* ------------------ navbar, mobile menu, scroll state ------------------ */
+const nav = $('#nav'), burger = $('#burger'), drawer = $('#drawer'), scrim = $('#scrim'), toTop = $('#toTop');
+function setMenu(open){
+  drawer.classList.toggle('open', open);
+  scrim.classList.toggle('on', open);
+  burger.classList.toggle('open', open);
+  burger.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
 }
-populateRoomTypeDropdown();
+burger.addEventListener('click', () => setMenu(!drawer.classList.contains('open')));
+scrim.addEventListener('click', () => setMenu(false));
+$$('#drawer a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
 
-function todayISO(){
-  const d = new Date();
-  return d.toISOString().split('T')[0];
+const sections = $$('section[id]');
+function onScroll(){
+  const y = scrollY;
+  nav.classList.toggle('solid', y > 60);
+  toTop.classList.toggle('on', y > 700);
+  let cur = '';
+  sections.forEach(s => { if (y >= s.offsetTop - 140) cur = s.id; });
+  $$('#navLinks a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
 }
-function addDaysISO(iso, days){
-  const d = new Date(iso);
-  d.setDate(d.getDate() + days);
-  return d.toISOString().split('T')[0];
-}
+addEventListener('scroll', onScroll, { passive:true });
+onScroll();
+toTop.addEventListener('click', () => scrollTo({ top:0, behavior: reduced ? 'auto' : 'smooth' }));
 
-// Set sensible date mins on load
-[document.getElementById('heroCheckin'), document.getElementById('bkCheckin')].forEach(el => el.min = todayISO());
-document.getElementById('heroCheckin').addEventListener('change', function(){
-  const co = document.getElementById('heroCheckout');
-  co.min = addDaysISO(this.value, 1);
-  if (co.value && co.value <= this.value) co.value = addDaysISO(this.value, 1);
-});
-document.getElementById('bkCheckin').addEventListener('change', function(){
-  const co = document.getElementById('bkCheckout');
-  co.min = addDaysISO(this.value, 1);
-  if (co.value && co.value <= this.value) co.value = addDaysISO(this.value, 1);
-  clearFieldError('grp-checkin');
-});
+/* ------------------ scroll reveal ------------------ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold:.12, rootMargin:'0px 0px -40px' });
+$$('.r').forEach(el => io.observe(el));
 
-function openBookingModal(roomId){
-  resetBookingForm(false);
-  selectedRoomId = roomId || null;
+/* ------------------ booking form → WhatsApp ------------------ */
+const roomSel = $('#fRoom');
+roomSel.innerHTML = '<option value="">Not sure yet</option>' +
+  CONFIG.rooms.map(r => `<option>${r.name} — ${r.price}</option>`).join('');
 
-  const box = document.getElementById('selectionBox');
-  const roomTypeSelect = document.getElementById('bkRoomType');
+const today = new Date().toISOString().split('T')[0];
+$('#fIn').min = today; $('#fOut').min = today;
+$('#fIn').addEventListener('change', e => { $('#fOut').min = e.target.value || today; });
 
-  if (selectedRoomId){
-    const room = CONFIG.rooms.find(r => r.id === selectedRoomId);
-    if (room){
-      box.classList.add('filled');
-      box.innerHTML = `
-        <div class="sel-name">${room.name}</div>
-        <div class="sel-price">₹${room.price.toLocaleString('en-IN')} / night</div>
-        <div class="sel-meta"><span>${room.guests} Guests</span><span>${room.bed}</span></div>`;
-      roomTypeSelect.value = room.id;
-    }
-  } else {
-    box.classList.remove('filled');
-    box.textContent = 'Select a room type to see details here, or simply fill the form and our team will help you choose.';
-    roomTypeSelect.value = '';
-  }
-
-  // carry over dates/guests from hero search bar if filled
-  const heroCheckin = document.getElementById('heroCheckin').value;
-  const heroCheckout = document.getElementById('heroCheckout').value;
-  const heroGuests = document.getElementById('heroGuests').value;
-  if (heroCheckin) document.getElementById('bkCheckin').value = heroCheckin;
-  if (heroCheckout) document.getElementById('bkCheckout').value = heroCheckout;
-  if (heroGuests) document.getElementById('bkGuests').value = heroGuests;
-
-  document.getElementById('modalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeBookingModal(){
-  document.getElementById('modalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.getElementById('modalOverlay').addEventListener('click', (e) => {
-  if (e.target.id === 'modalOverlay') closeBookingModal();
-});
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('open')) closeBookingModal();
-});
-
-function submitHeroSearch(){
-  openBookingModal();
-}
-
-/* ---- validation ---- */
-function clearFieldError(groupId){
-  document.getElementById(groupId).classList.remove('error');
-}
-function setFieldError(groupId){
-  document.getElementById(groupId).classList.add('error');
-}
-function isValidPhone(v){
-  const digits = v.replace(/[^0-9]/g, '');
-  return digits.length >= 7;
-}
-
-function validateBookingForm(){
-  let valid = true;
-  const name = document.getElementById('bkName').value.trim();
-  const phone = document.getElementById('bkPhone').value.trim();
-  const checkin = document.getElementById('bkCheckin').value;
-  const checkout = document.getElementById('bkCheckout').value;
-
-  clearFieldError('grp-name'); clearFieldError('grp-phone'); clearFieldError('grp-checkin'); clearFieldError('grp-checkout');
-
-  if (!name){ setFieldError('grp-name'); valid = false; }
-  if (!phone || !isValidPhone(phone)){ setFieldError('grp-phone'); valid = false; }
-  if (!checkin){ setFieldError('grp-checkin'); valid = false; }
-  if (!checkout || (checkin && checkout <= checkin)){ setFieldError('grp-checkout'); valid = false; }
-
-  return valid;
-}
-
-function getBookingData(){
-  const roomTypeVal = document.getElementById('bkRoomType').value;
-  const room = CONFIG.rooms.find(r => r.id === roomTypeVal);
-  return {
-    name: document.getElementById('bkName').value.trim(),
-    phone: document.getElementById('bkPhone').value.trim(),
-    checkin: document.getElementById('bkCheckin').value,
-    checkout: document.getElementById('bkCheckout').value,
-    guests: document.getElementById('bkGuests').value,
-    roomType: room ? room.name : 'Any room',
-    roomCount: document.getElementById('bkRoomCount').value,
-    request: document.getElementById('bkRequest').value.trim()
-  };
-}
-
-function buildMessage(data){
-  let lines = [
-    `Booking Request — ${CONFIG.hotelName}`,
-    `Name: ${data.name}`,
-    `Phone: ${data.phone}`,
-    `Check-in: ${data.checkin || '-'}`,
-    `Check-out: ${data.checkout || '-'}`,
-    `Guests: ${data.guests}`,
-    `Room Type: ${data.roomType}`,
-    `Rooms: ${data.roomCount || '-'}`,
-    `Payment Method: ${data.paymentMethod === 'online' ? 'Online Payment' : 'Cash at Hotel'}`
-  ];
-
-  if (data.request) {
-    lines.push(`Special Request: ${data.request}`);
-  }
-
-  return lines.join('\n');
-}
-document.getElementById('bookingForm').addEventListener('submit', function(e){
+$('#bookForm').addEventListener('submit', e => {
   e.preventDefault();
-  if (!validateBookingForm()) return;
-  const data = getBookingData();
-  window.__lastBookingData = data;
+  const msg  = $('#formMsg');
+  const name = $('#fName').value.trim();
+  const tel  = $('#fPhone').value.trim();
+  const ci   = $('#fIn').value, co = $('#fOut').value;
 
-  document.getElementById('bookingForm').classList.remove('show');
-  document.getElementById('successPanel').classList.add('show');
-  showToast('Booking request submitted successfully');
-});
+  const fail = t => {
+    msg.textContent = t;
+    msg.className = 'form-msg err show';
+  };
+  if (name.length < 2)          return fail('Add your name so we know who to hold the room for.');
+  if (tel.replace(/\D/g,'').length < 8) return fail('Add a phone number we can reach you on.');
+  if (!ci || !co)               return fail('Pick both a check-in and a check-out date.');
+  if (new Date(co) <= new Date(ci)) return fail('Check-out has to be after check-in.');
 
-function sendWhatsAppFromForm(){
-  // Uses whatever is currently filled, even without full validation — this is a direct-contact shortcut.
-  const data = getBookingData();
-  window.__lastBookingData = data;
-  sendWhatsAppSummary();
-}
+  const text =
+`Booking request — ${CONFIG.hotelName}
 
-function sendWhatsAppSummary(){
-  const data = window.__lastBookingData || getBookingData();
-  const msg = buildMessage(data);
-  window.open('https://wa.me/' + CONFIG.whatsappNumber + '?text=' + encodeURIComponent(msg), '_blank');
-}
+Name: ${name}
+Phone: ${tel}
+Check-in: ${ci}
+Check-out: ${co}
+Room: ${roomSel.value || 'Not sure yet'}
+Guests: ${$('#fGuests').value}
+Notes: ${$('#fMsg').value.trim() || '—'}`;
 
-function openWhatsApp(){
-  const msg = `Hi ${CONFIG.hotelName}, I'd like to know more about booking a stay.`;
-  window.open('https://wa.me/' + CONFIG.whatsappNumber + '?text=' + encodeURIComponent(msg), '_blank');
-}
-
-function resetBookingForm(clearFields){
-  document.getElementById('successPanel').classList.remove('show');
-  document.getElementById('bookingForm').classList.add('show');
-  if (clearFields !== false){
-    document.getElementById('bookingForm').reset();
-    ['grp-name','grp-phone','grp-checkin','grp-checkout'].forEach(clearFieldError);
-    document.getElementById('bkCheckin').min = todayISO();
-  }
-}
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-let toastTimer;
-function showToast(text){
-  clearTimeout(toastTimer);
-  const toast = document.getElementById('toast');
-  document.getElementById('toastText').textContent = text;
-  toast.classList.add('show');
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
-}
-
-/* =========================================================
-   SMOOTH NAV OFFSET (accounts for sticky header)
-   ========================================================= */
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', function(e){
-    const id = this.getAttribute('href');
-    if (id.length > 1 && document.querySelector(id)){
-      e.preventDefault();
-      document.querySelector(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
+  msg.textContent = 'Opening WhatsApp with your request. Press send there to reach the front desk.';
+  msg.className = 'form-msg ok show';
+  window.open(waURL(text), '_blank', 'noopener');
 });
 </script>
 </body>
